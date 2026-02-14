@@ -1,21 +1,24 @@
 # List Lab
 
-An interactive React demo that compares three list rendering strategies side-by-side with real-time performance metrics. Built as a portfolio piece to demonstrate frontend performance optimization techniques.
+An interactive React demo that compares four list rendering strategies side-by-side with real-time performance metrics. Built as a portfolio piece to demonstrate frontend performance optimization techniques.
+
+**[Live Demo](https://listlab-lake.vercel.app/)**
 
 ## What It Does
 
-List Lab lets you switch between **Pagination**, **Infinite Scroll**, and **Virtualization** strategies while monitoring live metrics like DOM node count, items loaded, render time, and overall health status. A built-in recommendation engine suggests the best strategy based on your current dataset size and network conditions.
+List Lab lets you switch between **Pagination**, **Infinite Scroll**, **Virtualization**, and **Infinite + Virtual** (hybrid) strategies while monitoring live metrics like DOM node count, items loaded, render time, and overall health status. A built-in recommendation engine suggests the best strategy based on your current dataset size, network conditions, and data theme.
 
 ### Strategies
 
 - **Pagination** — Renders a fixed page of items at a time. DOM stays small and predictable.
 - **Infinite Scroll** — Progressively loads items as you scroll. DOM grows over time.
 - **Virtualization** — Only renders visible items using `@tanstack/react-virtual`. DOM stays constant even with 100k+ items.
+- **Infinite + Virtual** — Combines progressive data loading with virtualization. Items load in batches while only visible rows render in the DOM — the most production-realistic pattern.
 
 ### Features
 
 - Adjustable dataset size (100 to 100,000 items)
-- Three content themes (E-commerce, Social, Logs)
+- Four content themes (E-commerce, Social, Logs, Tasks)
 - Network simulation (Fast, Slow, Offline)
 - Real-time DOM node counting and health indicators
 - Performance comparison chart and metrics table
@@ -82,11 +85,12 @@ src/
 │   └── cn.ts                        # clsx + tailwind-merge utility
 ├── hooks/
 │   ├── use-dom-count.ts             # Polls DOM node count every 500ms
+│   ├── use-merge-refs.ts            # Merges multiple React refs safely
 │   └── use-render-timer.ts          # Measures render duration
 └── components/
     ├── layout/                      # Header, Footer
     ├── controls/                    # ControlsPanel, DatasetSizeSlider, ThemeSelector, NetworkSpeedSelector, ResetButton
-    ├── strategies/                  # StrategySwitcher, StrategyPanel, PaginationStrategy, InfiniteScrollStrategy, VirtualizationStrategy
+    ├── strategies/                  # StrategySwitcher, StrategyPanel, PaginationStrategy, InfiniteScrollStrategy, VirtualizationStrategy, HybridStrategy
     ├── items/                       # ListItem (theme-aware), ListItemSkeleton, EmptyState
     ├── metrics/                     # MetricsBar, MetricBadge, HealthIndicator
     ├── comparison/                  # ComparisonSection, ComparisonChart, ComparisonTable, RecommendationCard
@@ -101,4 +105,4 @@ src/
 
 **Network simulation** adds artificial delays to data fetching: fast (50ms), slow (1500ms), offline (immediate error).
 
-**Recommendation engine** evaluates dataset size and network speed to suggest the optimal strategy — it uses configuration-based logic, not measured metrics, so the recommendation is available before interacting with any strategy.
+**Recommendation engine** evaluates dataset size, network speed, and data theme to suggest the optimal strategy — it uses configuration-based logic, not measured metrics, so the recommendation is available before interacting with any strategy.
