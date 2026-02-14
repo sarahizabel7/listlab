@@ -1,6 +1,6 @@
-export type ThemeName = 'ecommerce' | 'social' | 'logs';
+export type ThemeName = 'ecommerce' | 'social' | 'logs' | 'tasks';
 
-export type StrategyType = 'pagination' | 'infinite' | 'virtual';
+export type StrategyType = 'pagination' | 'infinite' | 'virtual' | 'hybrid';
 
 export type NetworkSpeed = 'fast' | 'slow' | 'offline';
 

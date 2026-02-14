@@ -17,7 +17,7 @@ export function ComparisonSection() {
             Performance Comparison
           </h2>
         </div>
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-6">
           <div>
             <h3 className="text-xs font-medium text-text-secondary mb-3">
               DOM Node Count

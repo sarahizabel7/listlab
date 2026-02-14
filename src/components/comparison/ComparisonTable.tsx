@@ -17,6 +17,7 @@ const STRATEGY_LABELS = [
   { key: 'pagination' as const, label: 'Pagination', color: 'bg-pagination' },
   { key: 'infinite' as const, label: 'Infinite Scroll', color: 'bg-infinite' },
   { key: 'virtual' as const, label: 'Virtualization', color: 'bg-virtual' },
+  { key: 'hybrid' as const, label: 'Infinite + Virtual', color: 'bg-hybrid' },
 ];
 
 export function ComparisonTable() {

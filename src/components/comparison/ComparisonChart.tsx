@@ -14,6 +14,7 @@ const COLORS: Record<string, { active: string; inactive: string }> = {
   Pagination: { active: '#6366f1', inactive: '#e2e8f0' },
   'Infinite Scroll': { active: '#8b5cf6', inactive: '#e2e8f0' },
   Virtualization: { active: '#06b6d4', inactive: '#e2e8f0' },
+  'Inf. + Virtual': { active: '#f59e0b', inactive: '#e2e8f0' },
 };
 
 export function ComparisonChart() {
@@ -34,6 +35,11 @@ export function ComparisonChart() {
       name: 'Virtualization',
       domNodes: metrics.virtual.domNodeCount,
       measured: metrics.virtual.domNodeCount > 0 || metrics.virtual.itemsLoaded > 0,
+    },
+    {
+      name: 'Inf. + Virtual',
+      domNodes: metrics.hybrid.domNodeCount,
+      measured: metrics.hybrid.domNodeCount > 0 || metrics.hybrid.itemsLoaded > 0,
     },
   ];
 

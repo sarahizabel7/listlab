@@ -21,6 +21,7 @@ interface AppState {
   networkSpeed: NetworkSpeed;
   activeStrategy: StrategyType;
   infiniteScrollPaused: boolean;
+  hybridScrollPaused: boolean;
 
   // Metrics per strategy
   metrics: Record<StrategyType, StrategyMetrics>;
@@ -31,6 +32,7 @@ interface AppState {
   setNetworkSpeed: (speed: NetworkSpeed) => void;
   setActiveStrategy: (strategy: StrategyType) => void;
   setInfiniteScrollPaused: (paused: boolean) => void;
+  setHybridScrollPaused: (paused: boolean) => void;
   updateMetrics: (
     strategy: StrategyType,
     update: Partial<StrategyMetrics>,
@@ -44,11 +46,13 @@ export const useAppStore = create<AppState>((set) => ({
   networkSpeed: 'fast',
   activeStrategy: 'pagination',
   infiniteScrollPaused: false,
+  hybridScrollPaused: false,
 
   metrics: {
     pagination: { ...DEFAULT_METRICS },
     infinite: { ...DEFAULT_METRICS },
     virtual: { ...DEFAULT_METRICS },
+    hybrid: { ...DEFAULT_METRICS },
   },
 
   setDatasetSize: (size) => set({ datasetSize: size }),
@@ -56,6 +60,7 @@ export const useAppStore = create<AppState>((set) => ({
   setNetworkSpeed: (speed) => set({ networkSpeed: speed }),
   setActiveStrategy: (strategy) => set({ activeStrategy: strategy }),
   setInfiniteScrollPaused: (paused) => set({ infiniteScrollPaused: paused }),
+  setHybridScrollPaused: (paused) => set({ hybridScrollPaused: paused }),
 
   updateMetrics: (strategy, update) =>
     set((state) => ({
@@ -72,10 +77,12 @@ export const useAppStore = create<AppState>((set) => ({
       networkSpeed: 'fast',
       activeStrategy: 'pagination',
       infiniteScrollPaused: false,
+      hybridScrollPaused: false,
       metrics: {
         pagination: { ...DEFAULT_METRICS },
         infinite: { ...DEFAULT_METRICS },
         virtual: { ...DEFAULT_METRICS },
+        hybrid: { ...DEFAULT_METRICS },
       },
     }),
 }));

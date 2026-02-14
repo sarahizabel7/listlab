@@ -9,6 +9,7 @@ import {
   Layers,
   ScrollText,
   Zap,
+  Combine,
   ChevronRight,
   ShieldCheck,
   ShieldAlert,
@@ -18,6 +19,7 @@ const STRATEGY_ICONS: Record<StrategyType, React.ReactNode> = {
   pagination: <Layers className="w-5 h-5" />,
   infinite: <ScrollText className="w-5 h-5" />,
   virtual: <Zap className="w-5 h-5" />,
+  hybrid: <Combine className="w-5 h-5" />,
 };
 
 const STRATEGY_ACCENT: Record<StrategyType, string> = {
@@ -27,29 +29,34 @@ const STRATEGY_ACCENT: Record<StrategyType, string> = {
     'from-infinite/10 to-infinite/5 border-infinite/20',
   virtual:
     'from-virtual/10 to-virtual/5 border-virtual/20',
+  hybrid:
+    'from-hybrid/10 to-hybrid/5 border-hybrid/20',
 };
 
 const STRATEGY_ICON_BG: Record<StrategyType, string> = {
   pagination: 'bg-pagination/15 text-pagination',
   infinite: 'bg-infinite/15 text-infinite',
   virtual: 'bg-virtual/15 text-virtual',
+  hybrid: 'bg-hybrid/15 text-hybrid',
 };
 
 const STRATEGY_BUTTON: Record<StrategyType, string> = {
   pagination: 'bg-pagination hover:bg-pagination/90 focus-visible:ring-pagination',
   infinite: 'bg-infinite hover:bg-infinite/90 focus-visible:ring-infinite',
   virtual: 'bg-virtual hover:bg-virtual/90 focus-visible:ring-virtual',
+  hybrid: 'bg-hybrid hover:bg-hybrid/90 focus-visible:ring-hybrid',
 };
 
 export function RecommendationCard() {
   const datasetSize = useAppStore((s) => s.datasetSize);
   const networkSpeed = useAppStore((s) => s.networkSpeed);
+  const theme = useAppStore((s) => s.theme);
   const activeStrategy = useAppStore((s) => s.activeStrategy);
   const setActiveStrategy = useAppStore((s) => s.setActiveStrategy);
 
   const recommendation = useMemo(
-    () => getRecommendation(datasetSize, networkSpeed),
-    [datasetSize, networkSpeed],
+    () => getRecommendation(datasetSize, networkSpeed, theme),
+    [datasetSize, networkSpeed, theme],
   );
 
   const info = STRATEGY_INFO[recommendation.strategy];

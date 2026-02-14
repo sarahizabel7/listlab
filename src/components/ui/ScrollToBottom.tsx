@@ -1,17 +1,22 @@
 import { useState, useEffect, useCallback } from 'react';
 import { cn } from '@/lib/cn';
 import { useAppStore } from '@/store/app-store';
-import { ArrowDown } from 'lucide-react';
+import { ArrowDown, ArrowUp } from 'lucide-react';
 
-interface ScrollToBottomProps {
+interface ScrollToggleProps {
   targetId: string;
 }
 
-export function ScrollToBottom({ targetId }: ScrollToBottomProps) {
-  const [visible, setVisible] = useState(false);
+export function ScrollToBottom({ targetId }: ScrollToggleProps) {
+  const [direction, setDirection] = useState<'down' | 'up' | 'hidden'>(
+    'hidden',
+  );
+  const [bottomOffset, setBottomOffset] = useState(24);
   const setInfiniteScrollPaused = useAppStore(
     (s) => s.setInfiniteScrollPaused,
   );
+  const setHybridScrollPaused = useAppStore((s) => s.setHybridScrollPaused);
+  const activeStrategy = useAppStore((s) => s.activeStrategy);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,8 +24,25 @@ export function ScrollToBottom({ targetId }: ScrollToBottomProps) {
       if (!target) return;
 
       const targetRect = target.getBoundingClientRect();
-      // Show the button when the target is below the viewport
-      setVisible(targetRect.top > window.innerHeight);
+      const isTargetBelow = targetRect.top > window.innerHeight;
+      const isNearPageBottom =
+        window.innerHeight + window.scrollY >= document.body.scrollHeight - 100;
+
+      if (isNearPageBottom) {
+        setDirection('up');
+      } else if (isTargetBelow) {
+        setDirection('down');
+      } else {
+        setDirection('hidden');
+      }
+
+      // Push button above footer when it's visible
+      const footer = document.querySelector('footer');
+      if (footer) {
+        const footerRect = footer.getBoundingClientRect();
+        const overlap = window.innerHeight - footerRect.top;
+        setBottomOffset(overlap > 0 ? overlap + 16 : 24);
+      }
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
@@ -29,25 +51,41 @@ export function ScrollToBottom({ targetId }: ScrollToBottomProps) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [targetId]);
 
-  const scrollToTarget = useCallback(() => {
-    // Pause infinite scroll so new items don't push the comparison section away
-    setInfiniteScrollPaused(true);
+  const handleClick = useCallback(() => {
+    if (direction === 'down') {
+      // Pause loading strategies so new items don't push the section away
+      if (activeStrategy === 'infinite') setInfiniteScrollPaused(true);
+      if (activeStrategy === 'hybrid') setHybridScrollPaused(true);
 
-    const target = document.getElementById(targetId);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const target = document.getElementById(targetId);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [targetId, setInfiniteScrollPaused]);
+  }, [
+    direction,
+    targetId,
+    activeStrategy,
+    setInfiniteScrollPaused,
+    setHybridScrollPaused,
+  ]);
+
+  const visible = direction !== 'hidden';
 
   return (
     <button
-      onClick={scrollToTarget}
-      aria-label="Scroll to comparison section"
+      onClick={handleClick}
+      aria-label={
+        direction === 'down' ? 'Scroll to comparison' : 'Scroll to top'
+      }
+      style={{ bottom: bottomOffset }}
       className={cn(
-        'fixed bottom-6 right-6 z-40',
-        'flex items-center gap-2 rounded-full px-4 py-2.5',
-        'bg-text-primary text-white shadow-xl',
-        'cursor-pointer hover:bg-text-primary/90 active:scale-95',
+        'fixed right-6 z-40',
+        'flex items-center justify-center w-10 h-10 rounded-full',
+        'bg-pagination text-white shadow-xl',
+        'cursor-pointer hover:bg-pagination/90 active:scale-95',
         'transition-all duration-300',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-pagination focus-visible:ring-offset-2',
         visible
@@ -55,8 +93,11 @@ export function ScrollToBottom({ targetId }: ScrollToBottomProps) {
           : 'translate-y-4 opacity-0 pointer-events-none',
       )}
     >
-      <ArrowDown className="w-4 h-4" aria-hidden="true" />
-      <span className="text-xs font-medium">Comparison</span>
+      {direction === 'down' ? (
+        <ArrowDown className="w-4 h-4" aria-hidden="true" />
+      ) : (
+        <ArrowUp className="w-4 h-4" aria-hidden="true" />
+      )}
     </button>
   );
 }

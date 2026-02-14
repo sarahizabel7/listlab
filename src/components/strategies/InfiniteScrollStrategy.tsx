@@ -28,11 +28,13 @@ export function InfiniteScrollStrategy() {
   const loadingRef = useRef(false);
   const { containerRef, domNodeCount } = useDomCount();
   const renderTime = useRenderTimer([items]);
-  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [scrollContainer, setScrollContainer] = useState<HTMLDivElement | null>(null);
 
   const { ref: sentinelRef, inView } = useInView({
     threshold: 0,
     rootMargin: '100px',
+    root: scrollContainer,
+    skip: paused,
   });
 
   // Reset when controls change — also unpause
@@ -41,8 +43,8 @@ export function InfiniteScrollStrategy() {
     setHasMore(true);
     loadingRef.current = false;
     setPaused(false);
-    scrollContainerRef.current?.scrollTo({ top: 0 });
-  }, [datasetSize, theme, networkSpeed, setPaused]);
+    scrollContainer?.scrollTo({ top: 0 });
+  }, [datasetSize, theme, networkSpeed, setPaused]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadMore = useCallback(() => {
     if (loadingRef.current || !hasMore) return;
@@ -102,7 +104,7 @@ export function InfiniteScrollStrategy() {
   return (
     <StrategyPanel type="infinite" metrics={metrics}>
       <div
-        ref={scrollContainerRef}
+        ref={setScrollContainer}
         className="flex-1 overflow-y-auto custom-scrollbar"
         style={{ height: 400 }}
       >

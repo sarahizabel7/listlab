@@ -2,7 +2,7 @@ import { memo } from 'react';
 import type { ListItem as ListItemType, ThemeName } from '@/types';
 import { cn } from '@/lib/cn';
 import { Badge } from '@/components/ui/Badge';
-import { Tag, DollarSign, Clock, Terminal } from 'lucide-react';
+import { Tag, DollarSign, Clock, Terminal, ClipboardList } from 'lucide-react';
 
 interface ListItemProps {
   item: ListItemType;
@@ -99,6 +99,55 @@ function LogItem({ item }: { item: ListItemType }) {
   );
 }
 
+function TaskItem({ item }: { item: ListItemType }) {
+  const isPriority =
+    item.subtitle.includes('Critical') || item.subtitle.includes('High');
+  return (
+    <>
+      <div className="flex items-start gap-3">
+        <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-amber-50 flex items-center justify-center text-lg">
+          {item.avatar}
+        </div>
+        <div className="min-w-0 flex-1">
+          <div className="flex items-center gap-2">
+            <h4 className="text-sm font-medium text-text-primary truncate">
+              {item.title}
+            </h4>
+            <span className="text-[10px] font-mono text-text-muted flex-shrink-0">
+              #{item.id}
+            </span>
+          </div>
+          <p className="text-xs text-text-muted mt-0.5 truncate">
+            {item.subtitle}
+          </p>
+        </div>
+        {isPriority && (
+          <ClipboardList className="w-4 h-4 text-amber-500 flex-shrink-0 mt-0.5" />
+        )}
+      </div>
+      <div className="flex items-center gap-2 mt-2">
+        <Badge
+          variant="muted"
+          className={cn(
+            item.category === 'Bug' && 'bg-red-50 text-red-600',
+            item.category === 'Feature' && 'bg-blue-50 text-blue-600',
+            item.category === 'Chore' && 'bg-slate-50 text-slate-600',
+            item.category === 'Improvement' && 'bg-green-50 text-green-600',
+          )}
+        >
+          {item.category}
+        </Badge>
+        {item.tags.slice(0, 2).map((tag) => (
+          <Badge key={tag} variant="muted">
+            <Tag className="w-2.5 h-2.5 mr-0.5" />
+            {tag}
+          </Badge>
+        ))}
+      </div>
+    </>
+  );
+}
+
 export const ListItemComponent = memo(function ListItemComponent({
   item,
   theme,
@@ -115,6 +164,7 @@ export const ListItemComponent = memo(function ListItemComponent({
       {theme === 'ecommerce' && <EcommerceItem item={item} />}
       {theme === 'social' && <SocialItem item={item} />}
       {theme === 'logs' && <LogItem item={item} />}
+      {theme === 'tasks' && <TaskItem item={item} />}
     </div>
   );
 });

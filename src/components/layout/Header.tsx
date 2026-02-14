@@ -18,7 +18,7 @@ export function Header() {
           </div>
         </div>
         <a
-          href="https://github.com"
+          href="https://github.com/sarahizabel7/listlab"
           target="_blank"
           rel="noopener noreferrer"
           aria-label="View source on GitHub"

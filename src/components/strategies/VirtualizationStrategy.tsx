@@ -2,6 +2,7 @@ import { useEffect, useRef, useCallback } from 'react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { useAppStore } from '@/store/app-store';
 import { useDomCount } from '@/hooks/use-dom-count';
+import { useMergeRefs } from '@/hooks/use-merge-refs';
 import { useRenderTimer } from '@/hooks/use-render-timer';
 import { generateItem } from '@/lib/data-generator';
 import { VIRTUAL_ITEM_HEIGHT, VIRTUAL_OVERSCAN } from '@/constants';
@@ -19,12 +20,14 @@ export function VirtualizationStrategy() {
 
   const parentRef = useRef<HTMLDivElement>(null);
   const { containerRef, domNodeCount } = useDomCount();
+  const mergedRef = useMergeRefs(parentRef, containerRef);
 
   const virtualizer = useVirtualizer({
     count: networkSpeed === 'offline' ? 0 : datasetSize,
     getScrollElement: () => parentRef.current,
     estimateSize: () => VIRTUAL_ITEM_HEIGHT,
     overscan: VIRTUAL_OVERSCAN,
+    useFlushSync: false,
   });
 
   const virtualItems = virtualizer.getVirtualItems();
@@ -63,10 +66,7 @@ export function VirtualizationStrategy() {
   return (
     <StrategyPanel type="virtual" metrics={metrics}>
       <div
-        ref={(el) => {
-          parentRef.current = el;
-          (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = el;
-        }}
+        ref={mergedRef}
         className="flex-1 overflow-y-auto custom-scrollbar"
         style={{ height: 400 }}
       >

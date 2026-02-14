@@ -1,4 +1,4 @@
-import type { StrategyType, NetworkSpeed } from '@/types';
+import type { StrategyType, NetworkSpeed, ThemeName } from '@/types';
 
 export interface Recommendation {
   strategy: StrategyType;
@@ -9,11 +9,12 @@ export interface Recommendation {
 
 /**
  * Recommends the best list rendering strategy based on current conditions.
- * Uses dataset size and network speed as primary signals.
+ * Uses dataset size, network speed, and data theme as signals.
  */
 export function getRecommendation(
   datasetSize: number,
   networkSpeed: NetworkSpeed,
+  theme: ThemeName,
 ): Recommendation {
   // Offline: pagination is safest — smallest data payload per "page"
   if (networkSpeed === 'offline') {
@@ -26,13 +27,33 @@ export function getRecommendation(
     };
   }
 
-  // Very large datasets (10k+): virtualization is the clear winner
-  if (datasetSize >= 10_000) {
+  // Task lists: structured data that benefits from pagination (page URLs, back navigation, filtered views)
+  if (theme === 'tasks' && datasetSize <= 10_000) {
     return {
-      strategy: 'virtual',
+      strategy: 'pagination',
+      confidence: datasetSize <= 1_000 ? 'high' : 'medium',
+      reason: 'Ideal for structured task lists',
+      details:
+        'Task management UIs rely on pagination for shareable page URLs, predictable back-navigation, and filtered views. Users expect to browse tasks page by page rather than scroll through an endless list.',
+    };
+  }
+
+  // Very large datasets (10k+)
+  if (datasetSize >= 10_000) {
+    if (networkSpeed === 'slow') {
+      return {
+        strategy: 'virtual',
+        confidence: 'high',
+        reason: 'Optimal for large datasets on slow networks',
+        details: `With ${datasetSize.toLocaleString()} items on a slow connection, pure virtualization avoids batch-fetch delays. DOM stays constant (~50 nodes) regardless of dataset size.`,
+      };
+    }
+
+    return {
+      strategy: 'hybrid',
       confidence: 'high',
-      reason: 'Optimal for large datasets',
-      details: `With ${datasetSize.toLocaleString()} items, virtualization keeps DOM size constant (~50 nodes) regardless of dataset size. Pagination would work but requires many pages; infinite scroll would crash the browser.`,
+      reason: 'Best of both worlds for large datasets',
+      details: `With ${datasetSize.toLocaleString()} items on a fast network, the hybrid approach loads data progressively while virtualizing the DOM. You get constant DOM size (~50 nodes) with incremental data fetching — the most production-realistic pattern.`,
     };
   }
 
@@ -49,11 +70,11 @@ export function getRecommendation(
     }
 
     return {
-      strategy: 'virtual',
+      strategy: 'hybrid',
       confidence: 'medium',
       reason: 'Best performance-to-UX ratio',
       details:
-        'For 1,000+ items on fast networks, virtualization provides the smoothest scrolling experience with constant memory usage. Infinite scroll is viable but will accumulate DOM nodes over time.',
+        'For 1,000+ items on fast networks, the hybrid approach combines smooth virtualized scrolling with progressive data loading. DOM stays constant while data loads in batches.',
     };
   }
 

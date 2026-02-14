@@ -5,6 +5,7 @@ import { StrategySwitcher } from '@/components/strategies/StrategySwitcher';
 import { PaginationStrategy } from '@/components/strategies/PaginationStrategy';
 import { InfiniteScrollStrategy } from '@/components/strategies/InfiniteScrollStrategy';
 import { VirtualizationStrategy } from '@/components/strategies/VirtualizationStrategy';
+import { HybridStrategy } from '@/components/strategies/HybridStrategy';
 import { ComparisonSection } from '@/components/comparison/ComparisonSection';
 import { ScrollToBottom } from '@/components/ui/ScrollToBottom';
 import { useAppStore } from '@/store/app-store';
@@ -22,6 +23,7 @@ function ActiveStrategy() {
         {activeStrategy === 'pagination' && <PaginationStrategy />}
         {activeStrategy === 'infinite' && <InfiniteScrollStrategy />}
         {activeStrategy === 'virtual' && <VirtualizationStrategy />}
+        {activeStrategy === 'hybrid' && <HybridStrategy />}
       </div>
     </div>
   );
@@ -32,8 +34,8 @@ function App() {
     <div className="min-h-screen flex flex-col">
       <Header />
 
-      {/* Sticky controls + strategy tabs */}
-      <div className="sticky top-14 z-20 bg-surface-dim/95 backdrop-blur-sm border-b border-border-light">
+      {/* Controls + strategy tabs */}
+      <div className="bg-surface-dim border-b border-border-light">
         <div className="max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-3 space-y-3">
           <ControlsPanel />
           <StrategySwitcher />

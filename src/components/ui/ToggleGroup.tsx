@@ -22,7 +22,7 @@ export function ToggleGroup<T extends string>({
   return (
     <div
       className={cn(
-        'inline-flex items-center rounded-lg border border-border bg-surface-dim p-0.5 gap-0.5',
+        'inline-flex items-center rounded-lg border border-border bg-surface-dim p-0.5 gap-0.5 flex-nowrap',
         className,
       )}
     >
@@ -31,7 +31,7 @@ export function ToggleGroup<T extends string>({
           key={option.value}
           onClick={() => onChange(option.value)}
           className={cn(
-            'inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all cursor-pointer',
+            'inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-all cursor-pointer whitespace-nowrap',
             value === option.value
               ? 'bg-surface text-text-primary shadow-sm'
               : 'text-text-muted hover:text-text-secondary',

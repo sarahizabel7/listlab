@@ -13,6 +13,7 @@ export const DOM_POLL_INTERVAL = 500;
 export const VIRTUAL_ITEM_HEIGHT = 80;
 export const VIRTUAL_OVERSCAN = 5;
 export const INFINITE_SCROLL_BATCH = 20;
+export const HYBRID_SCROLL_BATCH = 50;
 
 export const NETWORK_DELAYS: Record<NetworkSpeed, number> = {
   fast: 50,
@@ -77,6 +78,26 @@ export const STRATEGY_INFO: Record<string, StrategyInfo> = {
       'Fixed item height often needed',
       'Search/find-in-page limitations',
       'Accessibility considerations',
+    ],
+  },
+  hybrid: {
+    type: 'hybrid',
+    label: 'Infinite + Virtual',
+    description:
+      'Combines infinite scroll loading with virtualization. Items load progressively while only visible rows render in the DOM.',
+    color: 'var(--color-hybrid)',
+    lightColor: 'var(--color-hybrid-light)',
+    pros: [
+      'Constant DOM size',
+      'Progressive data loading',
+      'Handles 100k+ items',
+      'Production-realistic pattern',
+    ],
+    cons: [
+      'Most complex implementation',
+      'Fixed item height needed',
+      'Network-dependent initial load',
+      'Search/find-in-page limitations',
     ],
   },
 };

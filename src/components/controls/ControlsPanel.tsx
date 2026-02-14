@@ -14,10 +14,12 @@ export function ControlsPanel() {
         </div>
         <ResetButton />
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
-        <DatasetSizeSlider />
+      <div className="space-y-4">
         <ThemeSelector />
-        <NetworkSpeedSelector />
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+          <DatasetSizeSlider />
+          <NetworkSpeedSelector />
+        </div>
       </div>
     </div>
   );
