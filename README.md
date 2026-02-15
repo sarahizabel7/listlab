@@ -2,7 +2,7 @@
 
 An interactive React demo that compares four list rendering strategies side-by-side with real-time performance metrics. Built as a portfolio piece to demonstrate frontend performance optimization techniques.
 
-**[Live Demo](https://listlab-lake.vercel.app/)**
+**[Live Demo](https://listlab-lake.vercel.app/)** | **[Read the Article](https://medium.com/@sarahizabelp/virtualization-vs-pagination-vs-infinite-scroll-choosing-the-right-strategy-919648d2ba0b)**
 
 ## What It Does
 
